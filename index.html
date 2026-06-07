@@ -1,48 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>GALA FC</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<header>
-  <h1>GALA FC</h1>
-</header>
+  <div id="app">
 
-<nav>
-  <button onclick="mostrar('inicio')">Inicio</button>
-  <button onclick="mostrar('partidos')">Partidos</button>
-  <button onclick="mostrar('equipo')">Equipo</button>
-</nav>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Temporada 2025/26</p>
+        <h1>GALA FC</h1>
+      </div>
+      <div class="club-badge">G</div>
+    </header>
 
-<main>
+    <main id="main-content">
 
-  <section id="inicio">
-    <h2>Resumen</h2>
+      <section id="page-partidos" class="page active">
+        <h2>Partidos</h2>
+        <div id="next-match"></div>
+        <h3 class="section-title">Próximos partidos</h3>
+        <div id="upcoming-matches"></div>
+      </section>
 
-    <div id="estadisticas"></div>
-  </section>
+      <section id="page-resultados" class="page">
+        <h2>Resultados</h2>
+        <div id="results-list"></div>
+      </section>
 
-  <section id="partidos" style="display:none">
-    <h2>Partidos</h2>
+      <section id="page-clasificacion" class="page">
+        <h2>Clasificación</h2>
+        <div id="standings-table"></div>
+      </section>
 
-    <div id="listaPartidos"></div>
-  </section>
+      <section id="page-plantilla" class="page">
+        <h2>Plantilla</h2>
+        <div id="squad-table"></div>
+      </section>
 
-  <section id="equipo" style="display:none">
-    <h2>Plantilla</h2>
+      <section id="page-rankings" class="page">
+        <h2>Rankings</h2>
+        <div id="rankings-content"></div>
+      </section>
 
-    <div id="listaJugadores"></div>
-  </section>
+      <section id="page-match-detail" class="page detail-page">
+        <button class="back-btn" id="back-from-match">← Volver</button>
+        <div id="match-detail-content"></div>
+      </section>
 
-</main>
+      <section id="page-player-detail" class="page detail-page">
+        <button class="back-btn" id="back-from-player">← Volver</button>
+        <div id="player-detail-content"></div>
+      </section>
 
-<script type="module" src="script.js"></script>
+    </main>
 
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-page="partidos">
+        <span>⚽</span>
+        <small>Partidos</small>
+      </button>
+
+      <button class="nav-item" data-page="resultados">
+        <span>📋</span>
+        <small>Resultados</small>
+      </button>
+
+      <button class="nav-item" data-page="clasificacion">
+        <span>📊</span>
+        <small>Clasificación</small>
+      </button>
+
+      <button class="nav-item" data-page="plantilla">
+        <span>👥</span>
+        <small>Plantilla</small>
+      </button>
+
+      <button class="nav-item" data-page="rankings">
+        <span>🏆</span>
+        <small>Rankings</small>
+      </button>
+    </nav>
+
+  </div>
+
+  <script type="module" src="script.js?v=20"></script>
 </body>
 </html>
