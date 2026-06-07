@@ -1,205 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GALA FC App</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GALA FC</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <header>
-    <h1>GALA FC</h1>
-    <p>App oficial del equipo</p>
-  </header>
+<header>
+  <h1>GALA FC</h1>
+</header>
 
-  <main>
+<nav>
+  <button onclick="mostrar('inicio')">Inicio</button>
+  <button onclick="mostrar('partidos')">Partidos</button>
+  <button onclick="mostrar('equipo')">Equipo</button>
+</nav>
 
-    <section id="inicio" class="section active">
-      <h2>Inicio</h2>
+<main>
 
-      <div class="card">
-        <h3>Próximo partido</h3>
-        <p><strong>GALA FC vs DonnerKebab FC</strong></p>
-        <p>Domingo · 15:45 · Navalcarbón</p>
-      </div>
+  <section id="inicio">
+    <h2>Resumen</h2>
 
-      <div class="card">
-        <h3>Último resultado</h3>
-        <p><strong>GALA FC 5 - 2 Asturianos</strong></p>
-        <p>MVP: FARLO</p>
-      </div>
+    <div id="estadisticas"></div>
+  </section>
 
-      <div class="card">
-        <h3>Situación actual</h3>
-        <p>1º clasificado · 42 puntos</p>
-      </div>
-    </section>
+  <section id="partidos" style="display:none">
+    <h2>Partidos</h2>
 
-    <section id="partidos" class="section">
-      <h2>Partidos</h2>
+    <div id="listaPartidos"></div>
+  </section>
 
-      <div class="card">
-        <h3>Jornada 1</h3>
-        <p>Rayo Portuano 1 - 6 GALA FC</p>
-        <p>Goles: Farlo x2, Comandante, Morci Jr, Matador, Pessi</p>
-      </div>
+  <section id="equipo" style="display:none">
+    <h2>Plantilla</h2>
 
-      <div class="card">
-        <h3>Jornada 2</h3>
-        <p>GALA FC 2 - 4 Bullfrog</p>
-        <p>Goles: Farlo, Morci</p>
-      </div>
+    <div id="listaJugadores"></div>
+  </section>
 
-      <div class="card">
-        <h3>Próximo</h3>
-        <p>GALA FC vs DonnerKebab FC</p>
-        <p>Domingo · 15:45</p>
-      </div>
-    </section>
+</main>
 
-    <section id="resultados" class="section">
-      <h2>Resultados</h2>
+<script type="module" src="script.js"></script>
 
-      <div class="result">
-        <span>GALA FC</span>
-        <strong>6 - 1</strong>
-        <span>Rayo Portuano</span>
-      </div>
-
-      <div class="result">
-        <span>GALA FC</span>
-        <strong>5 - 2</strong>
-        <span>Asturianos</span>
-      </div>
-
-      <div class="result">
-        <span>GALA FC</span>
-        <strong>3 - 4</strong>
-        <span>Figu</span>
-      </div>
-    </section>
-
-    <section id="clasificacion" class="section">
-      <h2>Clasificación</h2>
-
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Equipo</th>
-            <th>Pts</th>
-            <th>GF</th>
-            <th>GC</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="highlight">
-            <td>1</td>
-            <td>GALA FC</td>
-            <td>42</td>
-            <td>68</td>
-            <td>34</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>DonnerKebab FC</td>
-            <td>39</td>
-            <td>61</td>
-            <td>37</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Aguagas</td>
-            <td>36</td>
-            <td>55</td>
-            <td>40</td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>West Jamón</td>
-            <td>34</td>
-            <td>57</td>
-            <td>45</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section id="equipo" class="section">
-      <h2>Equipo</h2>
-
-      <div class="players">
-
-        <div class="player-card">
-          <div class="number">7</div>
-          <h3>FARLO</h3>
-          <p>Delantero</p>
-        </div>
-
-        <div class="player-card">
-          <div class="number">10</div>
-          <h3>COMANDANTE</h3>
-          <p>Mediapunta</p>
-        </div>
-
-        <div class="player-card">
-          <div class="number">5</div>
-          <h3>MORCI JR</h3>
-          <p>Defensa</p>
-        </div>
-
-        <div class="player-card">
-          <div class="number">99</div>
-          <h3>JARADASHVILI</h3>
-          <p>Portero</p>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="rankings" class="section">
-      <h2>Rankings</h2>
-
-      <div class="card">
-        <h3>Máximos goleadores</h3>
-        <ol>
-          <li>Farlo - 18 goles</li>
-          <li>El Matador - 12 goles</li>
-          <li>Comandante - 9 goles</li>
-        </ol>
-      </div>
-
-      <div class="card">
-        <h3>Asistencias</h3>
-        <ol>
-          <li>Comandante - 11 asistencias</li>
-          <li>Pessi - 8 asistencias</li>
-          <li>Romanglobe - 6 asistencias</li>
-        </ol>
-      </div>
-
-      <div class="card">
-        <h3>MVPs</h3>
-        <ol>
-          <li>Farlo - 5 MVPs</li>
-          <li>JARADASHVILI - 4 MVPs</li>
-          <li>Comandante - 3 MVPs</li>
-        </ol>
-      </div>
-    </section>
-
-  </main>
-
-  <nav class="bottom-nav">
-    <button class="nav-btn active" data-section="inicio">🏠<span>Inicio</span></button>
-    <button class="nav-btn" data-section="partidos">⚽<span>Partidos</span></button>
-    <button class="nav-btn" data-section="resultados">📋<span>Resultados</span></button>
-    <button class="nav-btn" data-section="clasificacion">📊<span>Clasificación</span></button>
-    <button class="nav-btn" data-section="equipo">👥<span>Equipo</span></button>
-    <button class="nav-btn" data-section="rankings">🏆<span>Rankings</span></button>
-  </nav>
-
-  <script type="module" src="script.js"></script>
 </body>
 </html>
