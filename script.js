@@ -109,7 +109,7 @@ const demoStandings = [
   { equipo: "ZENIT DE HASBULLA", pj: 22, pg: 5, pe: 4, pp: 13, gf: 50, gc: 82, pts: 19 },
   { equipo: "HPL", pj: 22, pg: 4, pe: 4, pp: 14, gf: 48, gc: 91, pts: 16 },
   { equipo: "La Lonja", pj: 22, pg: 4, pe: 2, pp: 16, gf: 51, gc: 98, pts: 14 }
-};
+];
 
 init();
 
