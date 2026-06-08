@@ -615,3 +615,29 @@ tr.gala-row {
   font-size: 11px;
   color: var(--muted);
 }
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: white;
+  padding: 6px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+}
+
+.club-badge {
+  overflow: hidden;
+}
+
+.club-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
