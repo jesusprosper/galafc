@@ -669,7 +669,13 @@ function openPlayerDetail(playerId) {
   document.getElementById("player-detail-content").innerHTML = `
     <div class="detail-hero">
       <div style="display:flex; align-items:center; gap:14px;">
-        <div class="player-avatar">${player.dorsal}</div>
+        <div class="player-profile-photo">
+  <img 
+    src="${getJugadorFoto(playerId)}" 
+    alt="${player.nombre}"
+    onerror="this.remove(); this.parentElement.textContent='${player.dorsal}'"
+  >
+</div>
         <div>
           <p class="eyebrow">${player.posicion}</p>
           <h2 style="margin:0;">${player.nombre}</h2>
