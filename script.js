@@ -27,6 +27,46 @@ let partidos = [];
 
 const GALA_LOGO = "assets/logos/gala_fc.webp";
 
+function getRivalLogo(rivalId) {
+  return rivales[rivalId]?.escudo || `assets/logos/${rivalId}.webp`;
+}
+
+function getLocalLogo(match) {
+  return match.local ? GALA_LOGO : getRivalLogo(match.rivalId);
+}
+
+function getAwayLogo(match) {
+  return match.local ? getRivalLogo(match.rivalId) : GALA_LOGO;
+}
+
+function renderTeamBadge(nombreEquipo, logoUrl, extraClass = "") {
+  const inicial = getTeamInitial(nombreEquipo);
+
+  return `
+    <div class="team-badge ${extraClass}">
+      <img 
+        src="${logoUrl}" 
+        alt="${nombreEquipo}"
+        onerror="this.style.display='none'; this.parentElement.textContent='${inicial}'"
+      >
+    </div>
+  `;
+}
+
+function renderSmallLogo(nombreEquipo, logoUrl) {
+  const inicial = getTeamInitial(nombreEquipo);
+
+  return `
+    <div class="small-logo">
+      <img 
+        src="${logoUrl}" 
+        alt="${nombreEquipo}"
+        onerror="this.style.display='none'; this.parentElement.textContent='${inicial}'"
+      >
+    </div>
+  `;
+}
+
 const demoStats = {
   farlo: { goles: 18, asistencias: 6, mvp: 4, pj: 19 },
   el_matador: { goles: 13, asistencias: 5, mvp: 3, pj: 17 },
@@ -286,7 +326,11 @@ function renderPartidos() {
 }
 
 function renderNextMatchCard(match) {
-  const rival = getRivalNombre(match.rivalId);
+  const localName = getLocalTeam(match);
+  const awayName = getAwayTeam(match);
+
+  const localLogo = getLocalLogo(match);
+  const awayLogo = getAwayLogo(match);
 
   return `
     <div class="card next-card small-match" data-match-id="${match.id}">
@@ -294,15 +338,15 @@ function renderNextMatchCard(match) {
 
       <div class="match-teams">
         <div class="team">
-          <div class="team-badge">G</div>
-          <span>${match.local ? "GALA FC" : rival}</span>
+          ${renderTeamBadge(localName, localLogo)}
+          <span>${localName}</span>
         </div>
 
         <div class="vs-box">VS</div>
 
         <div class="team">
-          <div class="team-badge rival">${getTeamInitial(rival)}</div>
-          <span>${match.local ? rival : "GALA FC"}</span>
+          ${renderTeamBadge(awayName, awayLogo, "rival")}
+          <span>${awayName}</span>
         </div>
       </div>
 
@@ -315,13 +359,23 @@ function renderNextMatchCard(match) {
 }
 
 function renderSmallMatch(match) {
+  const localName = getLocalTeam(match);
+  const awayName = getAwayTeam(match);
+
   return `
     <div class="card small-match" data-match-id="${match.id}">
       <div class="small-match-row">
         <div class="round-badge">J${match.jornada}</div>
 
         <div>
-          <div class="match-title">${getLocalTeam(match)} vs ${getAwayTeam(match)}</div>
+          <div class="match-title with-logos">
+            ${renderSmallLogo(localName, getLocalLogo(match))}
+            <span>${localName}</span>
+            <span class="mini-vs">vs</span>
+            ${renderSmallLogo(awayName, getAwayLogo(match))}
+            <span>${awayName}</span>
+          </div>
+
           <div class="match-subtitle">
             ${formatDate(match.fecha)} · ${match.hora || ""} · ${getCampoNombre(match.campoId)}
           </div>
@@ -371,12 +425,23 @@ function renderResultados() {
 }
 
 function renderResultCard(match, gala) {
+  const localName = getLocalTeam(match);
+  const awayName = getAwayTeam(match);
+
   return `
     <div class="result-card ${gala ? "gala" : ""}" data-result-match-id="${match.id}">
       <div class="result-row">
-        <div class="result-team">${getLocalTeam(match)}</div>
+        <div class="result-team result-team-logo">
+          ${renderSmallLogo(localName, getLocalLogo(match))}
+          <span>${localName}</span>
+        </div>
+
         <div class="result-score">${getLocalGoals(match)} - ${getAwayGoals(match)}</div>
-        <div class="result-team right">${getAwayTeam(match)}</div>
+
+        <div class="result-team result-team-logo right">
+          <span>${awayName}</span>
+          ${renderSmallLogo(awayName, getAwayLogo(match))}
+        </div>
       </div>
 
       <div class="result-meta">
