@@ -206,7 +206,27 @@ function getCampoNombre(id) {
 function getJugadorNombre(id) {
   return jugadores[id]?.nombre || id || "Jugador";
 }
+function getJugadorFoto(id) {
+  return jugadores[id]?.foto || "";
+}
 
+function renderPlayerPhoto(playerId, playerName, dorsal) {
+  const foto = getJugadorFoto(playerId);
+
+  if (!foto) {
+    return `<div class="player-photo-fallback">${dorsal}</div>`;
+  }
+
+  return `
+    <div class="player-photo">
+      <img 
+        src="${foto}" 
+        alt="${playerName}" 
+        onerror="this.remove(); this.parentElement.classList.add('player-photo-fallback'); this.parentElement.textContent='${dorsal}'"
+      >
+    </div>
+  `;
+}
 function formatDate(dateString) {
   if (!dateString) return "Fecha por confirmar";
 
@@ -475,12 +495,12 @@ function renderPlantilla() {
 
         ${group.map(player => `
           <div class="player-row" data-player-id="${player.id}">
-            <div class="player-number">${player.dorsal}</div>
+  ${renderPlayerPhoto(player.id, player.nombre, player.dorsal)}
 
-            <div class="player-main">
-              <strong>${player.nombre}</strong>
-              <small>${player.posicion}</small>
-            </div>
+  <div class="player-main">
+    <strong>${player.nombre}</strong>
+    <small>#${player.dorsal} · ${player.posicion}</small>
+  </div>
 
             <div class="player-stat">
               <b>${player.stats.goles}</b>
