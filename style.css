@@ -641,3 +641,60 @@ tr.gala-row {
   object-fit: contain;
   padding: 6px;
 }
+.team-badge {
+  overflow: hidden;
+}
+
+.team-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  display: block;
+}
+
+.small-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.small-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 2px;
+}
+
+.with-logos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mini-vs {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.result-team-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.result-team-logo.right {
+  justify-content: flex-end;
+}
