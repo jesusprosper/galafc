@@ -671,20 +671,20 @@ function openMatchDetail(matchId) {
       <span class="match-status">${played ? "PARTIDO JUGADO" : "PRÓXIMO PARTIDO"}</span>
 
       <div class="match-teams">
-        <div class="team">
-          <div class="team-badge">${getTeamInitial(getLocalTeam(match))}</div>
-          <span>${getLocalTeam(match)}</span>
-        </div>
+  <div class="team">
+    ${renderTeamBadge(getLocalTeam(match), getLocalLogo(match))}
+    <span>${getLocalTeam(match)}</span>
+  </div>
 
-        <div class="${played ? "score-box" : "vs-box"}">
-          ${played ? `${getLocalGoals(match)} - ${getAwayGoals(match)}` : "VS"}
-        </div>
+  <div class="${played ? "score-box" : "vs-box"}">
+    ${played ? `${getLocalGoals(match)} - ${getAwayGoals(match)}` : "VS"}
+  </div>
 
-        <div class="team">
-          <div class="team-badge">${getTeamInitial(getAwayTeam(match))}</div>
-          <span>${getAwayTeam(match)}</span>
-        </div>
-      </div>
+  <div class="team">
+    ${renderTeamBadge(getAwayTeam(match), getAwayLogo(match), "rival")}
+    <span>${getAwayTeam(match)}</span>
+  </div>
+</div>
 
       <div class="match-meta">
         <span>Jornada ${match.jornada}</span>
