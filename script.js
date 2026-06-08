@@ -389,10 +389,9 @@ function renderSmallMatch(match) {
 
 function renderResultados() {
   const played = partidos
-    .filter(isPlayed)
-    .sort((a, b) => Number(b.jornada) - Number(a.jornada))
-    .slice(0, 6);
-
+  .filter(isPlayed)
+  .sort((a, b) => Number(b.jornada) - Number(a.jornada));
+  
   const grouped = {};
 
   played.forEach(match => {
