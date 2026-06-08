@@ -207,7 +207,7 @@ function getJugadorNombre(id) {
   return jugadores[id]?.nombre || id || "Jugador";
 }
 function getJugadorFoto(id) {
-  return jugadores[id]?.foto || "";
+  return jugadores[id]?.foto || `assets/players/${id}.webp`;
 }
 
 function renderPlayerPhoto(playerId, playerName, dorsal) {
