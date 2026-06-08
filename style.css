@@ -346,7 +346,7 @@ tr.gala-row {
   padding: 11px;
   margin-bottom: 8px;
   display: grid;
-  grid-template-columns: 44px 1fr repeat(3, 34px);
+  grid-template-columns: 48px 1fr repeat(3, 34px);
   gap: 8px;
   align-items: center;
   cursor: pointer;
@@ -514,4 +514,28 @@ tr.gala-row {
     opacity: 1;
     transform: translateY(0);
   }
+}
+.player-photo,
+.player-photo-fallback {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-weight: bold;
+  border: 2px solid var(--green);
+}
+
+.player-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-photo-fallback {
+  font-size: 14px;
 }
