@@ -539,3 +539,79 @@ tr.gala-row {
 .player-photo-fallback {
   font-size: 14px;
 }
+.player-profile-hero {
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  color: white;
+  border-radius: 24px;
+  padding: 22px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.player-profile-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: white;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-weight: 900;
+  font-size: 28px;
+  border: 4px solid rgba(255,255,255,0.8);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+  flex-shrink: 0;
+}
+
+.player-profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-profile-info h2 {
+  margin: 4px 0 4px;
+  font-size: 26px;
+}
+
+.player-profile-info p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.player-profile-number {
+  display: inline-block;
+  background: rgba(255,255,255,0.18);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.profile-stats-grid div {
+  background: var(--green-soft);
+  border-radius: 14px;
+  padding: 12px 6px;
+  text-align: center;
+}
+
+.profile-stats-grid b {
+  display: block;
+  font-size: 20px;
+  color: var(--green);
+}
+
+.profile-stats-grid span {
+  font-size: 11px;
+  color: var(--muted);
+}
