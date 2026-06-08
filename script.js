@@ -655,7 +655,68 @@ function renderRankingBlock(title, players, key, label) {
     </div>
   `;
 }
+function contarRepetidos(lista = []) {
+  const contador = {};
 
+  lista.forEach(id => {
+    contador[id] = (contador[id] || 0) + 1;
+  });
+
+  return contador;
+}
+
+function renderJugadorEvento(jugadorId, cantidad, icono) {
+  const nombre = getJugadorNombre(jugadorId);
+  const foto = getJugadorFoto(jugadorId);
+  const simbolos = icono.repeat(cantidad);
+
+  return `
+    <div class="event-player-row">
+      <div class="event-player-photo">
+        <img 
+          src="${foto}" 
+          alt="${nombre}"
+          onerror="this.remove(); this.parentElement.textContent='${getTeamInitial(nombre)}'"
+        >
+      </div>
+
+      <div class="event-player-name">${nombre}</div>
+
+      <div class="event-icons">${simbolos}</div>
+    </div>
+  `;
+}
+
+function renderEventosPartido(match) {
+  const goleadores = contarRepetidos(match.goleadores || []);
+  const asistentes = contarRepetidos(match.asistentes || []);
+
+  const htmlGoles = Object.keys(goleadores).length
+    ? Object.entries(goleadores)
+        .map(([jugadorId, cantidad]) => renderJugadorEvento(jugadorId, cantidad, "⚽"))
+        .join("")
+    : `<p class="empty-text">Goleadores todavía no cargados.</p>`;
+
+  const htmlAsistencias = Object.keys(asistentes).length
+    ? Object.entries(asistentes)
+        .map(([jugadorId, cantidad]) => renderJugadorEvento(jugadorId, cantidad, "🥾"))
+        .join("")
+    : `<p class="empty-text">Asistencias todavía no cargadas.</p>`;
+
+  return `
+    <div class="detail-box match-events-box">
+      <h3>Goles</h3>
+      ${htmlGoles}
+
+      <h3 class="assists-title">Asistencias</h3>
+      ${htmlAsistencias}
+    </div>
+  `;
+}
+
+function getFotoPartido(match) {
+  return match.fotoPartido || match.foto || `assets/matches/${match.id}.webp`;
+}
 function openMatchDetail(matchId) {
   const match =
     partidos.find(p => p.id === matchId) ||
@@ -664,63 +725,51 @@ function openMatchDetail(matchId) {
   if (!match) return;
 
   const played = isPlayed(match);
-  const rival = getRivalNombre(match.rivalId);
 
   document.getElementById("match-detail-content").innerHTML = `
-    <div class="detail-hero">
+    <div class="detail-hero match-detail-hero">
       <span class="match-status">${played ? "PARTIDO JUGADO" : "PRÓXIMO PARTIDO"}</span>
 
       <div class="match-teams">
-  <div class="team">
-    ${renderTeamBadge(getLocalTeam(match), getLocalLogo(match))}
-    <span>${getLocalTeam(match)}</span>
-  </div>
+        <div class="team">
+          ${renderTeamBadge(getLocalTeam(match), getLocalLogo(match))}
+          <span>${getLocalTeam(match)}</span>
+        </div>
 
-  <div class="${played ? "score-box" : "vs-box"}">
-    ${played ? `${getLocalGoals(match)} - ${getAwayGoals(match)}` : "VS"}
-  </div>
+        <div class="${played ? "score-box detail-score" : "vs-box"}">
+          ${played ? `${getLocalGoals(match)} - ${getAwayGoals(match)}` : "VS"}
+        </div>
 
-  <div class="team">
-    ${renderTeamBadge(getAwayTeam(match), getAwayLogo(match), "rival")}
-    <span>${getAwayTeam(match)}</span>
-  </div>
-</div>
+        <div class="team">
+          ${renderTeamBadge(getAwayTeam(match), getAwayLogo(match), "rival")}
+          <span>${getAwayTeam(match)}</span>
+        </div>
+      </div>
 
-      <div class="match-meta">
+      <div class="match-meta detail-meta">
         <span>Jornada ${match.jornada}</span>
         <span>${formatDate(match.fecha)} · ${match.hora || ""}</span>
         <span>${getCampoNombre(match.campoId)}</span>
       </div>
     </div>
 
-    <div class="detail-box">
-      <h3>Información</h3>
-      <p><b>Rival:</b> ${rival}</p>
-      <p><b>Campo:</b> ${getCampoNombre(match.campoId)}</p>
-      <p><b>Estado:</b> ${played ? "Jugado" : "Pendiente"}</p>
-    </div>
-
-    <div class="detail-box">
-      <h3>Goles</h3>
-      ${
-        (match.goleadores || []).length
-          ? `<ul>${match.goleadores.map(id => `<li>${getJugadorNombre(id)}</li>`).join("")}</ul>`
-          : `<p>Datos de goleadores todavía no cargados.</p>`
-      }
-    </div>
-
-    <div class="detail-box">
-      <h3>Asistencias</h3>
-      ${
-        (match.asistentes || []).length
-          ? `<ul>${match.asistentes.map(id => `<li>${getJugadorNombre(id)}</li>`).join("")}</ul>`
-          : `<p>Datos de asistencias todavía no cargados.</p>`
-      }
-    </div>
+    ${renderEventosPartido(match)}
 
     <div class="detail-box">
       <h3>Crónica</h3>
       <p>${match.cronica || "Crónica pendiente de añadir."}</p>
+    </div>
+
+    <div class="detail-box">
+      <h3>Foto de partido</h3>
+
+      <div class="match-photo-box">
+        <img 
+          src="${getFotoPartido(match)}" 
+          alt="Foto del partido"
+          onerror="this.parentElement.innerHTML='<p class=&quot;empty-text&quot;>Foto de partido todavía no subida.</p>'"
+        >
+      </div>
     </div>
   `;
 
