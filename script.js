@@ -25,6 +25,8 @@ let rivales = {};
 let campos = {};
 let partidos = [];
 
+const GALA_LOGO = "assets/logos/gala_fc.webp";
+
 const demoStats = {
   farlo: { goles: 18, asistencias: 6, mvp: 4, pj: 19 },
   el_matador: { goles: 13, asistencias: 5, mvp: 3, pj: 17 },
