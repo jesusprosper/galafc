@@ -3,7 +3,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/fireba
 import {
   getFirestore,
   collection,
-  getDocs
+  getDocs,
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
@@ -24,6 +26,7 @@ let jugadores = {};
 let rivales = {};
 let campos = {};
 let partidos = [];
+let penalizaciones = {};
 
 const GALA_LOGO = "assets/logos/gala_fc.webp";
 
@@ -221,6 +224,14 @@ async function cargarFirebase() {
   });
 
   partidos.sort((a, b) => Number(a.jornada) - Number(b.jornada));
+
+  const penalizacionesDoc = await getDoc(doc(db, "penalizaciones", "2025_26"));
+
+if (penalizacionesDoc.exists()) {
+  penalizaciones = penalizacionesDoc.data().equipos || {};
+} else {
+  penalizaciones = {};
+}
 }
 
 async function cargarColeccion(nombre) {
@@ -643,7 +654,12 @@ function calcularClasificacionDesdeFirebase() {
       );
     });
   });
+Object.keys(tabla).forEach(equipoId => {
+  const penalizacion = Number(penalizaciones[equipoId] || 0);
 
+  tabla[equipoId].penalizacion = penalizacion;
+  tabla[equipoId].pts += penalizacion;
+});
   return Object.values(tabla).sort((a, b) => {
     const dgA = a.gf - a.gc;
     const dgB = b.gf - b.gc;
