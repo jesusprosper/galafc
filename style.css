@@ -790,3 +790,68 @@ tr.gala-row {
   display: block;
   object-fit: cover;
 }
+.result-card.gala {
+  position: relative;
+  border: none;
+  padding: 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+  transform: scale(1.01);
+}
+
+.result-card.gala-win {
+  background: linear-gradient(135deg, #ecfdf5, #ffffff);
+  border-left: 6px solid #16a34a;
+}
+
+.result-card.gala-draw {
+  background: linear-gradient(135deg, #fff7ed, #ffffff);
+  border-left: 6px solid #f59e0b;
+}
+
+.result-card.gala-loss {
+  background: linear-gradient(135deg, #fef2f2, #ffffff);
+  border-left: 6px solid #ef4444;
+}
+
+.gala-result-label {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.gala-win .gala-result-label {
+  background: #16a34a;
+  color: white;
+}
+
+.gala-draw .gala-result-label {
+  background: #f59e0b;
+  color: white;
+}
+
+.gala-loss .gala-result-label {
+  background: #ef4444;
+  color: white;
+}
+
+.result-card.gala .gala-score {
+  font-size: 18px;
+  padding: 8px 12px;
+}
+
+.result-card.gala-win .gala-score {
+  background: #16a34a;
+}
+
+.result-card.gala-draw .gala-score {
+  background: #f59e0b;
+}
+
+.result-card.gala-loss .gala-score {
+  background: #ef4444;
+}
