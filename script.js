@@ -410,10 +410,12 @@ function renderResultados() {
         html += renderResultCard(match, true);
       });
 
-      const otros = otrosResultadosDemo[jornada] || [];
-      otros.forEach(r => {
-        html += renderOtherResult(r);
-      });
+      const partidoGala = grouped[jornada][0];
+const otros = partidoGala.otrosResultados || [];
+
+otros.forEach(r => {
+  html += renderOtherResult(r);
+});
     });
 
   document.getElementById("results-list").innerHTML = html;
