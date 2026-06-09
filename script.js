@@ -435,20 +435,38 @@ otros.forEach(r => {
     el.addEventListener("click", () => openMatchDetail(el.dataset.resultMatchId));
   });
 }
+function getGalaOutcome(match) {
+  if (match.golesGala > match.golesRival) return "win";
+  if (match.golesGala < match.golesRival) return "loss";
+  return "draw";
+}
 
+function getGalaOutcomeText(match) {
+  if (match.golesGala > match.golesRival) return "Victoria GALA FC";
+  if (match.golesGala < match.golesRival) return "Derrota GALA FC";
+  return "Empate GALA FC";
+}
 function renderResultCard(match, gala) {
   const localName = getLocalTeam(match);
   const awayName = getAwayTeam(match);
 
+  const outcome = gala ? getGalaOutcome(match) : "";
+  const outcomeText = gala ? getGalaOutcomeText(match) : "";
+
   return `
-    <div class="result-card ${gala ? "gala" : ""}" data-result-match-id="${match.id}">
+    <div class="result-card ${gala ? `gala gala-${outcome}` : ""}" data-result-match-id="${match.id}">
+      
+      ${gala ? `<div class="gala-result-label">${outcomeText}</div>` : ""}
+
       <div class="result-row">
         <div class="result-team result-team-logo">
           ${renderSmallLogo(localName, getLocalLogo(match))}
           <span>${localName}</span>
         </div>
 
-        <div class="result-score">${getLocalGoals(match)} - ${getAwayGoals(match)}</div>
+        <div class="result-score gala-score">
+          ${getLocalGoals(match)} - ${getAwayGoals(match)}
+        </div>
 
         <div class="result-team result-team-logo right">
           <span>${awayName}</span>
