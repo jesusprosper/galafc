@@ -452,17 +452,65 @@ function renderResultCard(match, gala) {
   `;
 }
 
+function getEquipoNombre(equipoId) {
+  if (equipoId === "gala_fc") return "GALA FC";
+  return rivales[equipoId]?.nombre || equipoId || "Equipo";
+}
+
+function getEquipoLogo(equipoId) {
+  if (equipoId === "gala_fc") return GALA_LOGO;
+  return rivales[equipoId]?.escudo || `assets/logos/${equipoId}.webp`;
+}
+
 function renderOtherResult(result) {
-  const [home, hg, ag, away] = result;
+  let localName;
+  let visitanteName;
+  let golesLocal;
+  let golesVisitante;
+  let localLogo;
+  let visitanteLogo;
+
+  // Formato nuevo desde Firebase
+  if (!Array.isArray(result)) {
+    localName = getEquipoNombre(result.localId);
+    visitanteName = getEquipoNombre(result.visitanteId);
+    golesLocal = result.golesLocal;
+    golesVisitante = result.golesVisitante;
+    localLogo = getEquipoLogo(result.localId);
+    visitanteLogo = getEquipoLogo(result.visitanteId);
+  }
+
+  // Formato antiguo de prueba, por si todavía queda algo en GitHub
+  else {
+    const [home, hg, ag, away] = result;
+
+    localName = home;
+    visitanteName = away;
+    golesLocal = hg;
+    golesVisitante = ag;
+    localLogo = "";
+    visitanteLogo = "";
+  }
 
   return `
     <div class="result-card">
       <div class="result-row">
-        <div class="result-team">${home}</div>
-        <div class="result-score">${hg} - ${ag}</div>
-        <div class="result-team right">${away}</div>
+        <div class="result-team result-team-logo">
+          ${renderSmallLogo(localName, localLogo)}
+          <span>${localName}</span>
+        </div>
+
+        <div class="result-score">
+          ${golesLocal} - ${golesVisitante}
+        </div>
+
+        <div class="result-team result-team-logo right">
+          <span>${visitanteName}</span>
+          ${renderSmallLogo(visitanteName, visitanteLogo)}
+        </div>
       </div>
-      <div class="result-meta">Resultado de prueba</div>
+
+      <div class="result-meta">Resultado de liga</div>
     </div>
   `;
 }
