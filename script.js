@@ -516,18 +516,7 @@ function renderOtherResult(result) {
 }
 
 function renderClasificacion() {
-  const galaStats = calcularStatsGala();
-
-  const table = demoStandings.map(row => {
-    if (row.equipo === "GALA FC") {
-      return {
-        ...row,
-        ...galaStats
-      };
-    }
-
-    return row;
-  }).sort((a, b) => b.pts - a.pts || (b.gf - b.gc) - (a.gf - a.gc));
+  const table = calcularClasificacionDesdeFirebase();
 
   document.getElementById("standings-table").innerHTML = `
     <div class="table-card">
@@ -538,17 +527,23 @@ function renderClasificacion() {
             <th class="team-name">Equipo</th>
             <th>Pts</th>
             <th>PJ</th>
+            <th>PG</th>
+            <th>PE</th>
+            <th>PP</th>
             <th>DG</th>
           </tr>
         </thead>
 
         <tbody>
           ${table.map((row, index) => `
-            <tr class="${row.equipo === "GALA FC" ? "gala-row" : ""}">
+            <tr class="${row.id === "gala_fc" ? "gala-row" : ""}">
               <td>${index + 1}</td>
-              <td class="team-name">${row.equipo}</td>
+              <td class="team-name">${row.nombre}</td>
               <td><b>${row.pts}</b></td>
               <td>${row.pj}</td>
+              <td>${row.pg}</td>
+              <td>${row.pe}</td>
+              <td>${row.pp}</td>
               <td>${row.gf - row.gc}</td>
             </tr>
           `).join("")}
@@ -556,6 +551,110 @@ function renderClasificacion() {
       </table>
     </div>
   `;
+}
+
+function calcularClasificacionDesdeFirebase() {
+  const tabla = {};
+
+  function crearEquipo(id) {
+    if (!tabla[id]) {
+      tabla[id] = {
+        id,
+        nombre: id === "gala_fc" ? "GALA FC" : getEquipoNombre(id),
+        pj: 0,
+        pg: 0,
+        pe: 0,
+        pp: 0,
+        gf: 0,
+        gc: 0,
+        pts: 0
+      };
+    }
+  }
+
+  function sumarPartido(localId, golesLocal, visitanteId, golesVisitante) {
+    golesLocal = Number(golesLocal);
+    golesVisitante = Number(golesVisitante);
+
+    if (
+      Number.isNaN(golesLocal) ||
+      Number.isNaN(golesVisitante) ||
+      !localId ||
+      !visitanteId
+    ) {
+      return;
+    }
+
+    crearEquipo(localId);
+    crearEquipo(visitanteId);
+
+    tabla[localId].pj++;
+    tabla[visitanteId].pj++;
+
+    tabla[localId].gf += golesLocal;
+    tabla[localId].gc += golesVisitante;
+
+    tabla[visitanteId].gf += golesVisitante;
+    tabla[visitanteId].gc += golesLocal;
+
+    if (golesLocal > golesVisitante) {
+      tabla[localId].pg++;
+      tabla[visitanteId].pp++;
+      tabla[localId].pts += 3;
+    } else if (golesLocal < golesVisitante) {
+      tabla[visitanteId].pg++;
+      tabla[localId].pp++;
+      tabla[visitanteId].pts += 3;
+    } else {
+      tabla[localId].pe++;
+      tabla[visitanteId].pe++;
+      tabla[localId].pts += 1;
+      tabla[visitanteId].pts += 1;
+    }
+  }
+
+  // 1. Partidos de GALA FC
+  partidos.filter(isPlayed).forEach(match => {
+    if (match.local) {
+      sumarPartido(
+        "gala_fc",
+        match.golesGala,
+        match.rivalId,
+        match.golesRival
+      );
+    } else {
+      sumarPartido(
+        match.rivalId,
+        match.golesRival,
+        "gala_fc",
+        match.golesGala
+      );
+    }
+
+    // 2. Otros resultados de esa misma jornada
+    const otros = match.otrosResultados || [];
+
+    otros.forEach(result => {
+      sumarPartido(
+        result.localId,
+        result.golesLocal,
+        result.visitanteId,
+        result.golesVisitante
+      );
+    });
+  });
+
+  return Object.values(tabla).sort((a, b) => {
+    const dgA = a.gf - a.gc;
+    const dgB = b.gf - b.gc;
+
+    return (
+      b.pts - a.pts ||
+      dgB - dgA ||
+      b.gf - a.gf ||
+      a.nombre.localeCompare(b.nombre)
+    );
+  });
 }
 
 function calcularStatsGala() {
