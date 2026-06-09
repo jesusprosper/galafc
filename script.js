@@ -442,9 +442,9 @@ function getGalaOutcome(match) {
 }
 
 function getGalaOutcomeText(match) {
-  if (match.golesGala > match.golesRival) return "Victoria GALA FC";
-  if (match.golesGala < match.golesRival) return "Derrota GALA FC";
-  return "Empate GALA FC";
+  if (match.golesGala > match.golesRival) return "V";
+  if (match.golesGala < match.golesRival) return "D";
+  return "E";
 }
 function renderResultCard(match, gala) {
   const localName = getLocalTeam(match);
