@@ -299,7 +299,13 @@ function getTeamInitial(name) {
 }
 
 function isPlayed(match) {
-  return match.estado === "jugado" || match.golesGala !== null;
+  return (
+    match.estado === "jugado" &&
+    match.golesGala !== null &&
+    match.golesGala !== undefined &&
+    match.golesRival !== null &&
+    match.golesRival !== undefined
+  );
 }
 
 function getLocalTeam(match) {
@@ -899,6 +905,164 @@ function renderEventosPartido(match) {
 function getFotoPartido(match) {
   return match.fotoPartido || match.foto || `assets/matches/${match.id}.webp`;
 }
+
+function getAllLeagueMatches() {
+  const allMatches = [];
+
+  partidos.filter(isPlayed).forEach(match => {
+    if (match.local) {
+      allMatches.push({
+        jornada: match.jornada,
+        fecha: match.fecha,
+        localId: "gala_fc",
+        visitanteId: match.rivalId,
+        golesLocal: Number(match.golesGala),
+        golesVisitante: Number(match.golesRival)
+      });
+    } else {
+      allMatches.push({
+        jornada: match.jornada,
+        fecha: match.fecha,
+        localId: match.rivalId,
+        visitanteId: "gala_fc",
+        golesLocal: Number(match.golesRival),
+        golesVisitante: Number(match.golesGala)
+      });
+    }
+
+    (match.otrosResultados || []).forEach(result => {
+      allMatches.push({
+        jornada: match.jornada,
+        fecha: match.fecha,
+        localId: result.localId,
+        visitanteId: result.visitanteId,
+        golesLocal: Number(result.golesLocal),
+        golesVisitante: Number(result.golesVisitante)
+      });
+    });
+  });
+
+  return allMatches.sort((a, b) => Number(b.jornada) - Number(a.jornada));
+}
+
+function getResultadoEquipo(match, equipoId) {
+  const esLocal = match.localId === equipoId;
+  const gf = esLocal ? match.golesLocal : match.golesVisitante;
+  const gc = esLocal ? match.golesVisitante : match.golesLocal;
+
+  if (gf > gc) return "W";
+  if (gf < gc) return "L";
+  return "D";
+}
+
+function renderFormPill(letter) {
+  const text = {
+    W: "V",
+    D: "E",
+    L: "D"
+  };
+
+  return `<span class="form-pill ${letter}">${text[letter]}</span>`;
+}
+
+function renderClasificacionPrevia(match) {
+  const rivalId = match.rivalId;
+  const table = calcularClasificacionDesdeFirebase();
+
+  const rows = table
+    .filter(row => row.id === "gala_fc" || row.id === rivalId)
+    .map(row => `
+      <tr class="${row.id === "gala_fc" ? "gala-row" : "rival-row"}">
+        <td>${table.findIndex(t => t.id === row.id) + 1}</td>
+        <td class="team-name">${row.nombre}</td>
+        <td><b>${row.pts}</b></td>
+        <td>${row.pj}</td>
+        <td>${row.gf - row.gc}</td>
+      </tr>
+    `)
+    .join("");
+
+  return `
+    <div class="detail-box">
+      <h3>Clasificación</h3>
+
+      <div class="table-card mini-table">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th class="team-name">Equipo</th>
+              <th>Pts</th>
+              <th>PJ</th>
+              <th>DG</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows || `<tr><td colspan="5">Clasificación no disponible.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderRachaRival(match) {
+  const rivalId = match.rivalId;
+  const allMatches = getAllLeagueMatches();
+
+  const lastMatches = allMatches
+    .filter(m => m.localId === rivalId || m.visitanteId === rivalId)
+    .slice(0, 5);
+
+  const html = lastMatches.length
+    ? lastMatches.map(m => {
+        const rivalResultado = getResultadoEquipo(m, rivalId);
+        const localName = getEquipoNombre(m.localId);
+        const visitanteName = getEquipoNombre(m.visitanteId);
+
+        return `
+          <div class="form-match-row">
+            ${renderFormPill(rivalResultado)}
+            <span>${localName} ${m.golesLocal} - ${m.golesVisitante} ${visitanteName}</span>
+          </div>
+        `;
+      }).join("")
+    : `<p class="empty-text">No hay partidos anteriores del rival.</p>`;
+
+  return `
+    <div class="detail-box">
+      <h3>Racha de ${getEquipoNombre(rivalId)}</h3>
+      ${html}
+    </div>
+  `;
+}
+
+function renderUltimosEnfrentamientos(match) {
+  const rivalId = match.rivalId;
+
+  const h2h = partidos
+    .filter(p => isPlayed(p) && p.rivalId === rivalId)
+    .sort((a, b) => Number(b.jornada) - Number(a.jornada));
+
+  const html = h2h.length
+    ? h2h.map(p => `
+        <div class="form-match-row">
+          ${renderFormPill(getGalaOutcome(p) === "win" ? "W" : getGalaOutcome(p) === "loss" ? "L" : "D")}
+          <span>
+            J${p.jornada} · ${getLocalTeam(p)} ${getLocalGoals(p)} - ${getAwayGoals(p)} ${getAwayTeam(p)}
+          </span>
+        </div>
+      `).join("")
+    : `<p class="empty-text">No hay enfrentamientos anteriores contra este rival.</p>`;
+
+  return `
+    <div class="detail-box">
+      <h3>Últimos enfrentamientos</h3>
+      ${html}
+    </div>
+  `;
+}
+
 function openMatchDetail(matchId) {
   const match =
     partidos.find(p => p.id === matchId) ||
@@ -908,19 +1072,46 @@ function openMatchDetail(matchId) {
 
   const played = isPlayed(match);
 
+  const heroCenter = played
+    ? `<div class="score-box detail-score">${getLocalGoals(match)} - ${getAwayGoals(match)}</div>`
+    : `<div class="vs-box detail-vs">VS</div>`;
+
+  const extraContent = played
+    ? `
+      ${renderEventosPartido(match)}
+
+      <div class="detail-box">
+        <h3>Crónica</h3>
+        <p>${match.cronica || "Crónica pendiente de añadir."}</p>
+      </div>
+
+      <div class="detail-box">
+        <h3>Foto de partido</h3>
+
+        <div class="match-photo-box">
+          <img 
+            src="${getFotoPartido(match)}" 
+            alt="Foto del partido"
+            onerror="this.parentElement.innerHTML='<p class=&quot;empty-text&quot;>Foto de partido todavía no subida.</p>'"
+          >
+        </div>
+      </div>
+    `
+    : `
+      ${renderClasificacionPrevia(match)}
+      ${renderRachaRival(match)}
+      ${renderUltimosEnfrentamientos(match)}
+    `;
+
   document.getElementById("match-detail-content").innerHTML = `
     <div class="detail-hero match-detail-hero">
-      <span class="match-status">${played ? "PARTIDO JUGADO" : "PRÓXIMO PARTIDO"}</span>
-
       <div class="match-teams">
         <div class="team">
           ${renderTeamBadge(getLocalTeam(match), getLocalLogo(match))}
           <span>${getLocalTeam(match)}</span>
         </div>
 
-        <div class="${played ? "score-box detail-score" : "vs-box"}">
-          ${played ? `${getLocalGoals(match)} - ${getAwayGoals(match)}` : "VS"}
-        </div>
+        ${heroCenter}
 
         <div class="team">
           ${renderTeamBadge(getAwayTeam(match), getAwayLogo(match), "rival")}
@@ -930,29 +1121,12 @@ function openMatchDetail(matchId) {
 
       <div class="match-meta detail-meta">
         <span>Jornada ${match.jornada}</span>
-        <span>${formatDate(match.fecha)} · ${match.hora || ""}</span>
+        <span>${formatDate(match.fecha)} · ${match.hora || "Hora por confirmar"}</span>
         <span>${getCampoNombre(match.campoId)}</span>
       </div>
     </div>
 
-    ${renderEventosPartido(match)}
-
-    <div class="detail-box">
-      <h3>Crónica</h3>
-      <p>${match.cronica || "Crónica pendiente de añadir."}</p>
-    </div>
-
-    <div class="detail-box">
-      <h3>Foto de partido</h3>
-
-      <div class="match-photo-box">
-        <img 
-          src="${getFotoPartido(match)}" 
-          alt="Foto del partido"
-          onerror="this.parentElement.innerHTML='<p class=&quot;empty-text&quot;>Foto de partido todavía no subida.</p>'"
-        >
-      </div>
-    </div>
+    ${extraContent}
   `;
 
   showPage("match-detail");
