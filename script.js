@@ -1063,6 +1063,74 @@ function renderUltimosEnfrentamientos(match) {
   `;
 }
 
+function getJugadoresActivosOrdenados() {
+  const ordenPosicion = {
+    "Portero": 1,
+    "Defensa": 2,
+    "Mediocentro": 3,
+    "Medio": 4,
+    "Delantero": 5
+  };
+
+  return Object.keys(jugadores)
+    .map(id => ({
+      id,
+      ...jugadores[id]
+    }))
+    .filter(jugador => jugador.activo !== false)
+    .sort((a, b) => {
+      const posA = ordenPosicion[a.posicion] || 99;
+      const posB = ordenPosicion[b.posicion] || 99;
+
+      return posA - posB || Number(a.dorsal) - Number(b.dorsal);
+    });
+}
+
+function getJugadoresQueJugaron(match) {
+  const noJugaron = match.noJugaron || [];
+
+  return getJugadoresActivosOrdenados()
+    .filter(jugador => !noJugaron.includes(jugador.id));
+}
+
+function renderJugadoresPartido(match) {
+  const jugadoresQueJugaron = getJugadoresQueJugaron(match);
+
+  if (!jugadoresQueJugaron.length) {
+    return `
+      <div class="detail-box">
+        <h3>Jugadores</h3>
+        <p class="empty-text">No hay jugadores registrados para este partido.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="detail-box">
+      <h3>Jugadores que jugaron</h3>
+
+      <div class="match-players-grid">
+        ${jugadoresQueJugaron.map(jugador => `
+          <div class="match-player-chip">
+            <div class="match-player-photo">
+              <img 
+                src="${getJugadorFoto(jugador.id)}" 
+                alt="${jugador.nombre}"
+                onerror="this.remove(); this.parentElement.textContent='${jugador.dorsal}'"
+              >
+            </div>
+
+            <div>
+              <strong>${jugador.nombre}</strong>
+              <span>#${jugador.dorsal}</span>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function openMatchDetail(matchId) {
   const match =
     partidos.find(p => p.id === matchId) ||
@@ -1079,7 +1147,7 @@ function openMatchDetail(matchId) {
   const extraContent = played
     ? `
       ${renderEventosPartido(match)}
-
+      ${renderJugadoresPartido(match)}
       <div class="detail-box">
         <h3>Crónica</h3>
         <p>${match.cronica || "Crónica pendiente de añadir."}</p>
