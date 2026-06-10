@@ -855,3 +855,35 @@ tr.gala-row {
 .result-card.gala-loss .gala-score {
   background: #ef4444;
 }
+.detail-vs {
+  color: white;
+  font-size: 30px;
+  font-weight: 900;
+  text-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  min-width: 72px;
+  text-align: center;
+}
+
+.mini-table {
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+
+.rival-row {
+  background: #f8fafc;
+  font-weight: bold;
+}
+
+.form-match-row {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.form-match-row:last-child {
+  border-bottom: none;
+}
