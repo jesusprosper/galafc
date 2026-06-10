@@ -887,3 +887,53 @@ tr.gala-row {
 .form-match-row:last-child {
   border-bottom: none;
 }
+.match-players-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.match-player-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-soft);
+  border-radius: 14px;
+  padding: 8px;
+  min-width: 0;
+}
+
+.match-player-photo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.match-player-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.match-player-chip strong {
+  display: block;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.match-player-chip span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
