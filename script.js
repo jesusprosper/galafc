@@ -211,7 +211,7 @@ async function cargarFirebase() {
   campos = await cargarColeccion("campos");
 
   const jornadasSnapshot = await getDocs(
-    collection(db, "partidos", "2025_26", "jornadas")
+    collection(db, "partidos", "2026_27", "jornadas")
   );
 
   partidos = [];
@@ -225,7 +225,7 @@ async function cargarFirebase() {
 
   partidos.sort((a, b) => Number(a.jornada) - Number(b.jornada));
 
-  const penalizacionesDoc = await getDoc(doc(db, "penalizaciones", "2025_26"));
+  const penalizacionesDoc = await getDoc(doc(db, "penalizaciones", "2026_27"));
 
 if (penalizacionesDoc.exists()) {
   penalizaciones = penalizacionesDoc.data().equipos || {};
